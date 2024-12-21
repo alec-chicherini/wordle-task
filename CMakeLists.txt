@@ -12,5 +12,7 @@ project(wordle_task)
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 COMPONENTS Gui Widgets REQUIRED)
-add_executable(${CMAKE_PROJECT_NAME} main.cxx)
+add_executable(${CMAKE_PROJECT_NAME} main.cxx GameState.cxx GameState.h WidgetButtons.cxx WidgetButtons.h WidgetKeyboard.cxx WidgetButtons.h)
+message(${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${CMAKE_PROJECT_NAME} Qt5::Gui Qt5::Widgets)
