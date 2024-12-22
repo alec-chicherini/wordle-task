@@ -1,6 +1,7 @@
 #include <WidgetGame.h>
 #include <QDebug>
 #include <QKeyEvent>
+#include <QMessageBox>
 
 WidgetGame::WidgetGame()
 {
@@ -11,6 +12,13 @@ WidgetGame::WidgetGame()
     QVBoxLayout* qVBoxLayout = new QVBoxLayout(this);
     qVBoxLayout->addWidget(widgetButtons);
     qVBoxLayout->addWidget(widgetKeyboard);
+
+    QObject::connect(m_state, &GameState::signalMsgBox,
+                     this,    [=](QString msg){
+                                                QMessageBox msgBox(this);
+                                                msgBox.setText(msg);
+                                                msgBox.exec();
+                                               });
 };
 
 

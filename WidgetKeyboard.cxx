@@ -45,7 +45,7 @@ WidgetKeyboard::WidgetKeyboard(GameState* state) : m_state(state)
     } ));
     qVBoxLayoutKeyboard->addWidget(createKeyboardRow(
     {
-    key("<-",QSize(KEY_SIZE,KEY_SIZE)),key("Я"),key("Ч"),key("С"),key("M"),key("И"),key("Т"),key("Ь"),key("Б"),key("Ю"),key("Enter",QSize(KEY_SIZE*2,KEY_SIZE))
+    key("<-",QSize(KEY_SIZE*2,KEY_SIZE)),key("Я"),key("Ч"),key("С"),key("M"),key("И"),key("Т"),key("Ь"),key("Б"),key("Ю"),key("Enter",QSize(KEY_SIZE*2,KEY_SIZE))
     } ));
     this->setLayout(qVBoxLayoutKeyboard);
 };

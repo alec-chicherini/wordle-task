@@ -1,18 +1,37 @@
 #include <GameState.h>
-
 #include <QApplication>
-#include <QMessageBox>
+#include <filesystem>
+#include <fstream>
+GameState::eProcessRowResult GameState::ProcessRow()
+{
+    GameState::eProcessRowResult result;
+
+    QString& word = m_game_state_array[m_row];
+    if(word == m_word_hidden)
+    {
+        result = GameState::eProcessRowResult::WORD_IS_ANSWER;
+    }
+    else if(m_set_of_words.find(word) != m_set_of_words.end())
+    {
+        result = GameState::eProcessRowResult::WORD_EXISTS;
+    }
+    else
+    {
+        result = GameState::eProcessRowResult::WORD_DO_NOT_EXISTS;
+    }
+    return result;
+};
 
 QString GameState::GetRow(int row)
-    {
-        return m_game_state_array[row];
-    };
+{
+    return m_game_state_array[row];
+};
 
 void GameState::InputChar(const QString& ch)
     {
         if(m_row == ROWS_NUM)
         {
-            emit signalGameOver();
+        //    emit signalGameOver();
             qDebug()<<"Game Over";
             qApp->exit(0);
             return;
@@ -30,15 +49,30 @@ void GameState::InputChar(const QString& ch)
         }
         else if(ch == "Enter" && qStr.length() == COLS_NUM)
         {
-            emit signalProcessRow(qStr);
-            if(m_row != ROWS_NUM)
+            eProcessRowResult processRowResult = ProcessRow();
+            if(processRowResult == eProcessRowResult::WORD_EXISTS)
             {
-                m_row++;
+                if(m_row != ROWS_NUM)
+                {
+                    m_row++;
+                }
+                else
+                {
+                    emit signalMsgBox(QString("Вы проиграли.\nБыло загадано слово:\n%1").arg(m_word_hidden));
+                }
+            }
+            else if(processRowResult == eProcessRowResult::WORD_DO_NOT_EXISTS)
+            {
+                emit signalMsgBox(QString("Такого слова не существует"));
+            }
+            else if(processRowResult == eProcessRowResult::WORD_IS_ANSWER)
+            {
+                emit signalMsgBox(QString("Вы победили.\nВы отгадали слово:\n%1").arg(m_word_hidden));
             }
         }
         else if(ch == "Enter" && qStr.length() != COLS_NUM)
         {
-            //do nothing
+            emit signalMsgBox(QString("Букв меньше чем надо"));
         }
         else
         {
@@ -51,4 +85,40 @@ void GameState::InputChar(const QString& ch)
 
     };
 
-    GameState::GameState() { };
+GameState::GameState()
+{
+    try
+    {
+        m_word_hidden=QString::fromStdString("МБАЙТ");
+
+        namespace fs = std::filesystem;
+        const fs::path defaultWordsPath(fs::current_path()/"words.txt");
+        if(fs::exists(defaultWordsPath))
+        {
+            std::ifstream stream{defaultWordsPath};
+            std::string word;
+            while(stream >> word)
+            {
+                QString qStrWord = QString::fromStdString(word).toUpper();
+                if(qStrWord.length()==5)
+                {
+                    m_set_of_words.insert(QString::fromStdString(word).toUpper());
+                }
+            }
+        }
+        else
+        {
+            throw std::logic_error("words.txt do not exists");
+        }
+
+        if(m_set_of_words.size()==0)
+        {
+            throw std::logic_error("set of words size is zero");
+        }
+    }
+    catch(std::exception& ex)
+    {
+        qDebug()<<QString("GameState std::exception(%1)\nExit 1").arg(ex.what());
+        qApp->exit(1);
+    }
+};
