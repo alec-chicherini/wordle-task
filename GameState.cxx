@@ -1,5 +1,8 @@
 #include <GameState.h>
 #include <QApplication>
+#include <QRandomGenerator>
+#include <QColor>
+
 #include <filesystem>
 #include <fstream>
 GameState::eProcessRowResult GameState::ProcessRow()
@@ -49,10 +52,37 @@ void GameState::InputChar(const QString& ch)
         }
         else if(ch == "Enter" && qStr.length() == COLS_NUM)
         {
+            auto processRowColors = [&]()
+                {
+                    QVector<QColor> result(COLS_NUM);
+                    for(qsizetype i=0; i<qsizetype(COLS_NUM); i++)
+                    {
+                        if(qStr.at(i) == m_word_hidden.at(i))
+                        {
+                            result[i] = Qt::green;
+                        }
+                        else if(m_word_hidden.contains(qStr.at(i)))
+                        {
+                            result[i] = Qt::yellow;
+                        }
+                        else
+                        {
+                            result[i] = Qt::lightGray;
+                        }
+                    }
+                    return result;
+                };
+
             eProcessRowResult processRowResult = ProcessRow();
-            if(processRowResult == eProcessRowResult::WORD_EXISTS)
+            if(processRowResult == eProcessRowResult::WORD_IS_ANSWER)
             {
-                if(m_row != ROWS_NUM)
+                emit signalUpdateRowColors(m_row, processRowColors());
+                emit signalMsgBox(QString("Вы победили.\nВы отгадали слово:\n%1").arg(m_word_hidden));
+            }
+            else if(processRowResult == eProcessRowResult::WORD_EXISTS)
+            {
+                emit signalUpdateRowColors(m_row, processRowColors());
+                if(m_row != ROWS_NUM-1)
                 {
                     m_row++;
                 }
@@ -64,10 +94,6 @@ void GameState::InputChar(const QString& ch)
             else if(processRowResult == eProcessRowResult::WORD_DO_NOT_EXISTS)
             {
                 emit signalMsgBox(QString("Такого слова не существует"));
-            }
-            else if(processRowResult == eProcessRowResult::WORD_IS_ANSWER)
-            {
-                emit signalMsgBox(QString("Вы победили.\nВы отгадали слово:\n%1").arg(m_word_hidden));
             }
         }
         else if(ch == "Enter" && qStr.length() != COLS_NUM)
@@ -89,8 +115,6 @@ GameState::GameState()
 {
     try
     {
-        m_word_hidden=QString::fromStdString("МБАЙТ");
-
         namespace fs = std::filesystem;
         const fs::path defaultWordsPath(fs::current_path()/"words.txt");
         if(fs::exists(defaultWordsPath))
@@ -111,9 +135,15 @@ GameState::GameState()
             throw std::logic_error("words.txt do not exists");
         }
 
-        if(m_set_of_words.size()==0)
+        if(m_set_of_words.size() == 0)
         {
             throw std::logic_error("set of words size is zero");
+        }
+        else
+        {
+            int pos = QRandomGenerator::global()->bounded(quint32(m_set_of_words.size()));
+            m_word_hidden = *std::next(m_set_of_words.begin(), pos);
+            qDebug()<<"Word hidden:"<<m_word_hidden;
         }
     }
     catch(std::exception& ex)

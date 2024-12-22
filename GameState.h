@@ -35,6 +35,7 @@ public:
 signals:
     void signalMsgBox(QString);
     void signalUpdate(int);
+    void signalUpdateRowColors(int, QVector<QColor>);
 
 private:
     std::array<QString,ROWS_NUM> m_game_state_array;

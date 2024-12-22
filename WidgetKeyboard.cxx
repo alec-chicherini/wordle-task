@@ -19,8 +19,25 @@ WidgetKeyboard::WidgetKeyboard(GameState* state) : m_state(state)
             btn->setMinimumWidth(attr.second.width());
     	    btn->setFixedHeight(attr.second.height());
             qHBoxLayout->addWidget(btn);
-            QObject::connect(btn,    &QPushButton::pressed,
-                             m_state,  [=](){ m_state->InputChar(btn->text()); });
+            QObject::connect(btn,     &QPushButton::pressed,
+                             m_state, [=](){ m_state->InputChar(btn->text()); });
+
+            QObject::connect(m_state, &GameState::signalUpdateRowColors,
+                             this, [=](int row, QVector<QColor> colors){
+                                                QString rowString = m_state->GetRow(row);
+                                                for(int k = 0; k < COLS_NUM; k++)
+                                                {
+                                                    if(btn->text()==rowString[k])
+                                                    {
+                                                        QPalette pal = btn->palette();
+                                                        pal.setColor(QPalette::Button, colors[k]);
+                                                        btn->setAutoFillBackground(true);
+                                                        btn->setPalette(pal);
+                                                        btn->update();
+                                                    }
+                                                }
+                                                });
+
         }
         return gameKeyboardRow;
     };

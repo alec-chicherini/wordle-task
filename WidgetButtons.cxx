@@ -37,7 +37,22 @@ WidgetButtons::WidgetButtons(GameState* state):m_state(state)
                                                     }
                                                 }
                                                 });
+            QObject::connect(m_state, &GameState::signalUpdateRowColors,
+                             this, [=](int row, QVector<QColor> colors){
+                                                QString rowString = m_state->GetRow(row);
+                                                for(int k = 0; k < COLS_NUM; k++)
+                                                {
+                                                    auto btn = m_btns[row][k];
+                                                    QPalette pal = btn->palette();
+                                                    pal.setColor(QPalette::Button, colors[k]);
+                                                    btn->setAutoFillBackground(true);
+                                                    btn->setPalette(pal);
+                                                    btn->update();
+                                                }
+                                                });
+
         }
     }
+
     this->setLayout(qGridLayout);
 };
