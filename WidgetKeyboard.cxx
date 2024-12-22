@@ -1,4 +1,6 @@
 #include <WidgetKeyboard.h>
+#include <QDebug>
+#include <QKeyEvent>
 
 WidgetKeyboard::WidgetKeyboard(GameState* state) : m_state(state)
 {

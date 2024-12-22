@@ -19,7 +19,6 @@ void GameState::InputChar(const QString& ch)
         }
 
         QString & qStr = m_game_state_array[m_row];
-        qDebug()<<"GameState::InputChar "<<qStr<<qStr.length();
 
         if(ch == "<-")
         {
@@ -49,7 +48,7 @@ void GameState::InputChar(const QString& ch)
                 emit signalUpdate(m_row);
             }
         }
-   qDebug()<<"GameState::InputChar "<<qStr;
+
     };
 
     GameState::GameState() { };

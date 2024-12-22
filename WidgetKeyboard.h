@@ -8,7 +8,6 @@
 #include <QObject>
 
 #include <vector>
-#include <memory>
 
 #include <GameState.h>
 
@@ -18,6 +17,7 @@ Q_OBJECT
 
 public:
     WidgetKeyboard(GameState* state);
+
 private:
     GameState* m_state;
 };
