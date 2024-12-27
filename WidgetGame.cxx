@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QApplication>
 
 WidgetGame::WidgetGame()
 {
@@ -18,6 +19,22 @@ WidgetGame::WidgetGame()
                                                 QMessageBox msgBox(this);
                                                 msgBox.setText(msg);
                                                 msgBox.exec();
+                                               });
+    QObject::connect(m_state, &GameState::signalQuitOrRestart,
+                     this,    [=](){
+                                                QMessageBox msgBox(this);
+                                                msgBox.setText(QString("Играть ещё?"));
+                                                msgBox.addButton(QMessageBox::Yes);
+                                                msgBox.addButton(QMessageBox::No);
+                                                int result = msgBox.exec();
+                                                if(result == QMessageBox::No)
+                                                {
+                                                    qApp->exit(1);
+                                                }
+                                                else
+                                                {
+                                                    m_state->Reset();
+                                                }
                                                });
 };
 

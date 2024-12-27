@@ -4,6 +4,7 @@
 #include <QHash>
 #include <array>
 #include <unordered_set>
+#include <filesystem>
 
 namespace std {
   template<> struct hash<QString> {
@@ -31,11 +32,16 @@ public:
         WORD_IS_ANSWER
     };
     eProcessRowResult ProcessRow();
+    void AddWordsFromFile(std::filesystem::path p);
+    QVector<QColor> ProcessRowColors(const QString& qStr);
+    void Reset();
 
 signals:
     void signalMsgBox(QString);
     void signalUpdate(int);
     void signalUpdateRowColors(int, QVector<QColor>);
+    void signalQuitOrRestart();
+    void signalReset();
 
 private:
     std::array<QString,ROWS_NUM> m_game_state_array;

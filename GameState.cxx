@@ -3,7 +3,6 @@
 #include <QRandomGenerator>
 #include <QColor>
 
-#include <filesystem>
 #include <fstream>
 GameState::eProcessRowResult GameState::ProcessRow()
 {
@@ -30,29 +29,7 @@ QString GameState::GetRow(int row)
     return m_game_state_array[row];
 };
 
-void GameState::InputChar(const QString& ch)
-    {
-        if(m_row == ROWS_NUM)
-        {
-        //    emit signalGameOver();
-            qDebug()<<"Game Over";
-            qApp->exit(0);
-            return;
-        }
-
-        QString & qStr = m_game_state_array[m_row];
-
-        if(ch == "<-")
-        {
-            if(qStr.length())
-            {
-                qStr.remove(qStr.length()-1,1);
-                emit signalUpdate(m_row);
-            }
-        }
-        else if(ch == "Enter" && qStr.length() == COLS_NUM)
-        {
-            auto processRowColors = [&]()
+            QVector<QColor> GameState::ProcessRowColors(const QString& qStr)
                 {
                     QVector<QColor> result(COLS_NUM);
                     for(qsizetype i=0; i<qsizetype(COLS_NUM); i++)
@@ -73,15 +50,30 @@ void GameState::InputChar(const QString& ch)
                     return result;
                 };
 
+void GameState::InputChar(const QString& ch)
+    {
+        QString & qStr = m_game_state_array[m_row];
+
+        if(ch == "<-")
+        {
+            if(qStr.length())
+            {
+                qStr.remove(qStr.length()-1,1);
+                emit signalUpdate(m_row);
+            }
+        }
+        else if(ch == "Enter" && qStr.length() == COLS_NUM)
+        {
             eProcessRowResult processRowResult = ProcessRow();
             if(processRowResult == eProcessRowResult::WORD_IS_ANSWER)
             {
-                emit signalUpdateRowColors(m_row, processRowColors());
+                emit signalUpdateRowColors(m_row, ProcessRowColors(qStr));
                 emit signalMsgBox(QString("Вы победили.\nВы отгадали слово:\n%1").arg(m_word_hidden));
+                emit signalQuitOrRestart();
             }
             else if(processRowResult == eProcessRowResult::WORD_EXISTS)
             {
-                emit signalUpdateRowColors(m_row, processRowColors());
+                emit signalUpdateRowColors(m_row, ProcessRowColors(qStr));
                 if(m_row != ROWS_NUM-1)
                 {
                     m_row++;
@@ -89,6 +81,7 @@ void GameState::InputChar(const QString& ch)
                 else
                 {
                     emit signalMsgBox(QString("Вы проиграли.\nБыло загадано слово:\n%1").arg(m_word_hidden));
+                    emit signalQuitOrRestart();
                 }
             }
             else if(processRowResult == eProcessRowResult::WORD_DO_NOT_EXISTS)
@@ -111,29 +104,34 @@ void GameState::InputChar(const QString& ch)
 
     };
 
-GameState::GameState()
+void GameState::AddWordsFromFile(std::filesystem::path p)
 {
-    try
+    namespace fs = std::filesystem;
+    if(fs::exists(p))
     {
-        namespace fs = std::filesystem;
-        const fs::path defaultWordsPath(fs::current_path()/"words.txt");
-        if(fs::exists(defaultWordsPath))
+        std::ifstream stream{p};
+        std::string word;
+        while(stream >> word)
         {
-            std::ifstream stream{defaultWordsPath};
-            std::string word;
-            while(stream >> word)
+            QString qStrWord = QString::fromStdString(word).toUpper();
+            if(qStrWord.length()==5)
             {
-                QString qStrWord = QString::fromStdString(word).toUpper();
-                if(qStrWord.length()==5)
-                {
-                    m_set_of_words.insert(QString::fromStdString(word).toUpper());
-                }
+                m_set_of_words.insert(QString::fromStdString(word).toUpper());
             }
         }
-        else
-        {
-            throw std::logic_error("words.txt do not exists");
-        }
+    }
+    else
+    {
+        throw std::logic_error("words.txt do not exists");
+    }
+}
+
+GameState::GameState()
+{
+    namespace fs = std::filesystem;
+    try
+    {
+        AddWordsFromFile(fs::current_path()/"words.txt");
 
         if(m_set_of_words.size() == 0)
         {
@@ -141,9 +139,7 @@ GameState::GameState()
         }
         else
         {
-            int pos = QRandomGenerator::global()->bounded(quint32(m_set_of_words.size()));
-            m_word_hidden = *std::next(m_set_of_words.begin(), pos);
-            qDebug()<<"Word hidden:"<<m_word_hidden;
+            Reset();
         }
     }
     catch(std::exception& ex)
@@ -152,3 +148,21 @@ GameState::GameState()
         qApp->exit(1);
     }
 };
+
+void GameState::Reset()
+{
+    int pos = QRandomGenerator::global()->bounded(quint32(m_set_of_words.size()));
+    m_word_hidden = *std::next(m_set_of_words.begin(), pos);
+    qDebug()<<"Word hidden:"<<m_word_hidden;
+
+    m_row = 0;
+
+    for(size_t i = 0; i < ROWS_NUM; i++)
+    {
+        m_game_state_array[i] = QString();
+        emit signalUpdateRowColors(i, ProcessRowColors(m_game_state_array[i]));
+        emit signalUpdate(i);
+    }
+
+    emit signalReset();
+}

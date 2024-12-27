@@ -1,6 +1,7 @@
 #include <WidgetKeyboard.h>
 #include <QDebug>
 #include <QKeyEvent>
+#include <QApplication>
 
 WidgetKeyboard::WidgetKeyboard(GameState* state) : m_state(state)
 {
@@ -38,6 +39,14 @@ WidgetKeyboard::WidgetKeyboard(GameState* state) : m_state(state)
                                                 }
                                                 });
 
+            QObject::connect(m_state, &GameState::signalReset,
+                             this, [=](){
+                                            QPalette pal = btn->palette();
+                                            pal.setColor(QPalette::Button, QColor(239,239,239,255));
+                                            btn->setAutoFillBackground(true);
+                                            btn->setPalette(pal);
+                                            btn->update();
+                                        });
         }
         return gameKeyboardRow;
     };

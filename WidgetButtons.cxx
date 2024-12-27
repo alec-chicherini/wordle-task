@@ -50,6 +50,14 @@ WidgetButtons::WidgetButtons(GameState* state):m_state(state)
                                                     btn->update();
                                                 }
                                                 });
+            QObject::connect(m_state, &GameState::signalReset,
+                             this, [=](){
+                                            QPalette pal = widgetField->palette();
+                                            pal.setColor(QPalette::Button, QColor(239,239,239,255));
+                                            widgetField->setAutoFillBackground(true);
+                                            widgetField->setPalette(pal);
+                                            widgetField->update();
+                                         });
 
         }
     }
