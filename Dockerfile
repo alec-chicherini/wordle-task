@@ -16,6 +16,6 @@ RUN  rm -rf /opt/cmake && \
      ln -s /opt/cmake/bin/cmake /bin/cmake && \
      ln -s /opt/cmake/bin/cpack /bin/cpack
 
-RUN git clone https://github.com/alec-chicherini/wordle-task.git
+RUN git clone https://github.com/alec-chicherini/wordle-task.git && cd wordle-task && git pull
 
 ENTRYPOINT ["bash", "/wordle-task/deploy/rebuild.sh"]
