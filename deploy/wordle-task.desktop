@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/sbin/./wordle-task
+Icon=wordle-task
+Name=wordle-task
+Categories=Utility;
