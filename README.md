@@ -1,5 +1,5 @@
 # wordle-task
-Это pet project с актуальным на 2025 год.
+Это pet project с игрой Вордли(Wordle).
 
 # Plan
 | # | What | Platform | Stack | State | Comment |
