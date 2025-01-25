@@ -29,26 +29,26 @@ QString GameState::GetRow(int row)
     return m_game_state_array[row];
 };
 
-            QVector<QColor> GameState::ProcessRowColors(const QString& qStr)
-                {
-                    QVector<QColor> result(COLS_NUM);
-                    for(qsizetype i=0; i<qsizetype(COLS_NUM); i++)
-                    {
-                        if(qStr.at(i) == m_word_hidden.at(i))
-                        {
-                            result[i] = Qt::green;
-                        }
-                        else if(m_word_hidden.contains(qStr.at(i)))
-                        {
-                            result[i] = Qt::yellow;
-                        }
-                        else
-                        {
-                            result[i] = Qt::lightGray;
-                        }
-                    }
-                    return result;
-                };
+QVector<QColor> GameState::ProcessRowColors(const QString& qStr)
+{
+    QVector<QColor> result(COLS_NUM);
+    for(qsizetype i=0; i<qsizetype(COLS_NUM); i++)
+    {
+        if(qStr.at(i) == m_word_hidden.at(i))
+        {
+            result[i] = Qt::green;
+        }
+        else if(m_word_hidden.contains(qStr.at(i)))
+        {
+            result[i] = Qt::yellow;
+        }
+        else
+        {
+            result[i] = Qt::lightGray;
+        }
+    }
+    return result;
+};
 
 void GameState::InputChar(const QString& ch)
     {
@@ -58,7 +58,7 @@ void GameState::InputChar(const QString& ch)
         {
             if(qStr.length())
             {
-                qStr.remove(qStr.length()-1,1);
+                qStr.resize(qStr.length() - 1);
                 emit signalUpdate(m_row);
             }
         }
@@ -156,7 +156,7 @@ void GameState::Reset()
 {
     int pos = QRandomGenerator::global()->bounded(quint32(m_set_of_words.size()));
     m_word_hidden = *std::next(m_set_of_words.begin(), pos);
-    qDebug()<<"Word hidden:"<<m_word_hidden;
+    qDebug() << "Word hidden:" << m_word_hidden;
 
     m_row = 0;
 

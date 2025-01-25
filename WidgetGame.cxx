@@ -6,7 +6,7 @@
 
 WidgetGame::WidgetGame()
 {
-    m_state = new GameState();
+    [[maybe_unused]] bool connected;
     WidgetKeyboard * widgetKeyboard = new WidgetKeyboard(m_state);
     WidgetButtons * widgetButtons = new WidgetButtons(m_state);
 
@@ -14,35 +14,36 @@ WidgetGame::WidgetGame()
     qVBoxLayout->addWidget(widgetButtons);
     qVBoxLayout->addWidget(widgetKeyboard);
 
-    QObject::connect(m_state, &GameState::signalMsgBox,
-                     this,    [=](QString msg){
-                                                QMessageBox msgBox(this);
-                                                msgBox.setText(msg);
-                                                msgBox.exec();
-                                               });
-    QObject::connect(m_state, &GameState::signalQuitOrRestart,
-                     this,    [=](){
-                                                QMessageBox msgBox(this);
-                                                msgBox.setText(QString("Играть ещё?"));
-                                                msgBox.addButton(QMessageBox::Yes);
-                                                msgBox.addButton(QMessageBox::No);
-                                                int result = msgBox.exec();
-                                                if(result == QMessageBox::No)
-                                                {
-                                                    qApp->exit(1);
-                                                }
-                                                else
-                                                {
-                                                    m_state->Reset();
-                                                }
-                                               });
+    connected = QObject::connect(&m_state, &GameState::signalMsgBox, this,[=,this](QString msg)
+        {
+            QMessageBox msgBox(this);
+            msgBox.setText(msg);
+            msgBox.exec();
+        });
+    Q_ASSERT_X(connected, "WidgetGame::WidgetGame connect(&m_state, &GameState::signalMsgBox, this, [](){})", "connected is FALSE");
+    connected = QObject::connect(&m_state, &GameState::signalQuitOrRestart, this, [=,this]()
+        {
+            QMessageBox msgBox(this);
+            msgBox.setText(QString("Играть ещё?"));
+            msgBox.addButton(QMessageBox::Yes);
+            msgBox.addButton(QMessageBox::No);
+            int result = msgBox.exec();
+            if(result == QMessageBox::No)
+            {
+                qApp->exit(1);
+            }
+            else
+            {
+                m_state.Reset();
+            }
+        });
+    Q_ASSERT_X(connected, "WidgetGame::WidgetGame connect(&m_state, &GameState::signalQuitOrRestart, this, [](){})", "connected is FALSE");
 };
-
 
 void WidgetGame::keyPressEvent(QKeyEvent* event)
 {
     quint32 code = event->nativeScanCode();
-
+    
     QString charToSend;
     bool needToSend = true;
     if(code == 36)
@@ -75,6 +76,6 @@ void WidgetGame::keyPressEvent(QKeyEvent* event)
 
     if(needToSend)
     {
-        m_state->InputChar(charToSend);
+        m_state.InputChar(charToSend);
     }
 };

@@ -8,6 +8,9 @@ RUN apt update && \
     wget \
     qt5-default
 
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-13 100 && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/clang-13 100
+
 RUN  rm -rf /opt/cmake && \
      mkdir /opt/cmake && \
      wget -P /opt/cmake https://github.com/Kitware/CMake/releases/download/v3.31.2/cmake-3.31.2-linux-x86_64.sh && \

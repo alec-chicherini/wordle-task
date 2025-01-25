@@ -16,10 +16,10 @@ class WidgetKeyboard : public QWidget
 Q_OBJECT
 
 public:
-    WidgetKeyboard(GameState* state);
+    WidgetKeyboard(GameState& state);
 
 private:
-    GameState* m_state;
+    GameState& m_state;
 };
 
 

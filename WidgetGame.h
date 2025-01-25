@@ -14,7 +14,7 @@ public:
     WidgetGame();
 
 private:
-    GameState* m_state;
+    GameState m_state;
 
 protected:
     virtual void keyPressEvent(QKeyEvent* event) override;
