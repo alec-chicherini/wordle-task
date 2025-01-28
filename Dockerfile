@@ -11,13 +11,8 @@ RUN apt update && \
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-13 100 && \
     update-alternatives --install /usr/bin/cc cc /usr/bin/clang-13 100
 
-RUN  rm -rf /opt/cmake && \
-     mkdir /opt/cmake && \
-     wget -P /opt/cmake https://github.com/Kitware/CMake/releases/download/v3.31.2/cmake-3.31.2-linux-x86_64.sh && \
-     chmod +x /opt/cmake/cmake-3.31.2-linux-x86_64.sh && \
-     bash -c "/opt/cmake/cmake-3.31.2-linux-x86_64.sh --skip-license --prefix=/opt/cmake" && \
-     ln -s /opt/cmake/bin/cmake /bin/cmake && \
-     ln -s /opt/cmake/bin/cpack /bin/cpack
+COPY scripts/install_cmake.sh .
+RUN install_cmake.sh
 
 RUN mkdir /result
 
