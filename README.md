@@ -4,27 +4,32 @@
 # Plan
 | # | What | Platform | Stack | State | Comment |
 |-|-|-|-|-|-|
-|1|Desktop application|Ubuntu 24.04|C++, Qt 6|In Progress|Собирается и запускается в Ubuntu 24.04. Работает в Ubuntu 20.04 и 24.04|
+|1|Desktop application|Ubuntu 20.04|C++, Qt5|Done|Собирается в Ubuntu 20.04. Работает в Ubuntu 20.04|
 |2|Web application|Web browsers|C++, Qt Latest, Web Assembly|Planning|Приложение в Web Assembly, работает в Google Chrome|
 |3|Web Application|Telegramm App|C++, TDLib|Planning|Можно поиграть в официальных приложениях Telegramm Desktop и Telegramm Android|
 |4|Web Application|VK Mini Apps|????|Planning|Можно поиграть в VK|
 |5|Backend|Ubuntu 24.04|C++, userver, postgres|Planning|IAM Service|
 |6|Backend|Ubuntu 24.04|C++, userver, redis|Planning|Сервер статистики|
-
+|7|GUI|Ubuntu|C++, Qt 6|Planning|Использовать Qt Virtual Keyboard|
+|8|Desktop application|Ubuntu|C++, Qt6 latest|Planning|Сделать новый таргет сборки в Docker где Qt latest, сборка на ubuntu:25.04. Qt собирается из latest исходников или из репозитория. Сборка статическая где всё вкомпилено в бинарник и Qt и системные либы. |
+|9|Desktop application|Linux|C++, Qt 6|Planning|Сделать консольную версию. Чтобы всё работало в bash с минимальным интерфейсом вроде dialog.|
 # 1 2
-Протестировано Ubuntu 20.04, 24.04
-
-### Собрать на чистой машине Ubuntu 24.04
+### Собрать на чистой машине Ubuntu
+Установить docker 
+```bash
+source <(curl https://raw.githubusercontent.com/alec-chicherini/wordle-task/refs/heads/main/scripts/install_docker.sh)
+```
+Собрать в docker
 ```bash
 git clone https://github.com/alec-chicherini/wordle-task.git
 cd wordle-task
-bash ./scripts/install_docker.sh #Внимательно! Удаляет старый докер, устанавливает новый rootless
-mkdir result #Тут будет инсталятор
-docker build . -t wordle-task-build
+docker build --target=qt_from_repo . -t wordle-task-build
+#docker build --target=qt_from_source . -t wordle-task-build #другая опция взять собрать Qt из исходников.
+mkdir result #Тут будет инсталятор 
 docker run -v ./result:/result wordle-task-build
 ```
 
-### Подготовить чистую машину для тестов Ubuntu 20.04, 22.04, 24.04
+### Подготовить чистую машину для тестов Ubuntu 20.04
 ```
 apt update
 apt install ubuntu-desktop
@@ -41,7 +46,7 @@ apt-get install -f -y
  
 #### Добавить слова в игру
 ```bash
-echo "УЕЫАО ЭЯИЮЙ" > /usr/etc/wordle-task/words/new_words.txt
+echo "УЕЫАО ЭЯИЮЙ" > /opt/wordle-task/words/new_words.txt
 ``` 
 
 # 3
