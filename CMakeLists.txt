@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.31 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
 
 #CMake
 set(CMAKE_CXX_STANDARD 20)
@@ -14,10 +14,19 @@ message(INFO "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
 
+if(EMSCRIPTEN)
+qt_add_executable(${CMAKE_PROJECT_NAME} main.cxx GameState.cxx GameState.h WidgetButtons.cxx WidgetButtons.h WidgetKeyboard.cxx WidgetButtons.h WidgetGame.h WidgetGame.cxx)
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS "--preload-file ../deploy/wordle-task/words/words.txt@/opt/wordle-task/words/words.txt")
+target_link_options(${CMAKE_PROJECT_NAME} PUBLIC -sASYNCIFY -Os)
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets)
+else()
 add_executable(${CMAKE_PROJECT_NAME} main.cxx GameState.cxx GameState.h WidgetButtons.cxx WidgetButtons.h WidgetKeyboard.cxx WidgetButtons.h WidgetGame.h WidgetGame.cxx)
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets stdc++fs)
+endif()
+
 target_compile_features(${CMAKE_PROJECT_NAME} PUBLIC cxx_std_20)
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${CMAKE_PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets stdc++fs)
+
 
 #CPack
 set(CMAKE_INSTALL_PREFIX /opt/${CMAKE_PROJECT_NAME})
