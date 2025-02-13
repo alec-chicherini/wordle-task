@@ -43,7 +43,7 @@ RUN wget https://mirror.yandex.ru/mirrors/qt.io/archive/qt/6.7/6.7.3/single/qt-e
 
 RUN mkdir qt-build && cd qt-build
 RUN   ../qt-everywhere-src-6.7.3/configure -release -submodules qtbase -nomake tests -nomake examples
-RUN cmake --build . --parallel
+RUN cmake --build . --parallel 4
 RUN cmake --install . --prefix /Qt-6.7.3
 
 ENV QT_BUILDED_FROM_SOURCE_PATH=/Qt-6.7.3
@@ -120,12 +120,12 @@ RUN wget https://mirror.yandex.ru/mirrors/qt.io/archive/qt/6.7/6.7.3/single/qt-e
     cd qt-everywhere-src-6.7.3 && \
     mkdir qt-build-base && cd qt-build-base && \
    ../configure -release -submodules qtbase,qtshadertools,qttools,qtquick3d,qtremoteobjects,qtscxml -nomake tests -nomake examples
-RUN cd /qt-everywhere-src-6.7.3/qt-build-base && cmake --build . --parallel 2
+RUN cd /qt-everywhere-src-6.7.3/qt-build-base && cmake --build . --parallel 4
 RUN cd /qt-everywhere-src-6.7.3/qt-build-base && cmake --install . --prefix /Qt-6.7.3-base
 
 RUN cd /qt-everywhere-src-6.7.3 && mkdir qt-build-wasm && cd qt-build-wasm && \
     ../configure -qt-host-path /Qt-6.7.3-base -platform wasm-emscripten -prefix /Qt-6.7.3-wasm
-RUN cd /qt-everywhere-src-6.7.3/qt-build-wasm && cmake --build . --parallel 2
+RUN cd /qt-everywhere-src-6.7.3/qt-build-wasm && cmake --build . --parallel 4
 RUN cd /qt-everywhere-src-6.7.3/qt-build-wasm && cmake --install . --prefix /Qt-6.7.3-wasm
 
 COPY . /wordle-task
