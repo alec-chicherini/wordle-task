@@ -1,5 +1,7 @@
 FROM ubuntu:24.04 AS qt_from_source
 
+COPY . /wordle-task
+
 RUN apt update && \
     apt install -y \
     git \
@@ -33,8 +35,8 @@ RUN apt update && \
     libxrender-dev
 
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-13 100
-COPY --chmod=777 scripts/install_cmake.sh ./
-RUN ./install_cmake.sh
+
+RUN bash scripts/install_cmake.sh
 
 RUN wget https://mirror.yandex.ru/mirrors/qt.io/archive/qt/6.7/6.7.3/single/qt-everywhere-src-6.7.3.tar.xz && \
     tar xf qt-everywhere-src-6.7.3.tar.xz
@@ -47,8 +49,7 @@ RUN cmake --install . --prefix /Qt-6.7.3
 ENV QT_BUILDED_FROM_SOURCE_PATH=/Qt-6.7.3
 
 RUN mkdir /result
-COPY . /wordle-task
-ENTRYPOINT ["bash", "/wordle-task/deploy/rebuild.sh"]
+ENTRYPOINT ["bash", "/wordle-task/client_qt/deploy/rebuild.sh"]
 
 FROM ubuntu:20.04 AS qt_from_repo
 ENV DEBIAN_FRONTEND=noninteractive
@@ -58,11 +59,10 @@ RUN apt update && \
     g++-10 \ 
     qt5-default
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 100
-COPY --chmod=777 scripts/install_cmake.sh ./
-RUN ./install_cmake.sh
+COPY . /wordle-task
+RUN bash /wordle-task/scripts/install_cmake.sh
 RUN mkdir /result
-COPY . /wordle-task/
-ENTRYPOINT ["bash", "/wordle-task/deploy/rebuild.sh"]
+ENTRYPOINT ["bash", "/wordle-task/client_qt/deploy/rebuild.sh"]
 
 FROM ubuntu:24.04 AS qt_wasm_build_from_source
 ENV DEBIAN_FRONTEND=noninteractive
@@ -129,8 +129,8 @@ RUN cd /qt-everywhere-src-6.7.3/qt-build-wasm && cmake --build . --parallel 2
 RUN cd /qt-everywhere-src-6.7.3/qt-build-wasm && cmake --install . --prefix /Qt-6.7.3-wasm
 
 COPY . /wordle-task
-RUN cd wordle-task && mkdir build && cd build && \
+RUN cd wordle-task/client_qt && mkdir build_wasm && cd build_wasm && \
     /Qt-6.7.3-wasm/bin/./qt-cmake .. && \
     cmake --build .
-RUN chmod 755 /wordle-task/deploy/run_python_http_server_wasm.sh
-ENTRYPOINT ["/wordle-task/deploy/run_python_http_server_wasm.sh", "/wordle-task/build"]
+RUN chmod 755 /wordle-task/scripts/run_python_http_server_wasm.sh
+ENTRYPOINT ["/wordle-task/scripts/run_python_http_server_wasm.sh", "/wordle-task/client_qt/build_wasm"]

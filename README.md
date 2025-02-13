@@ -1,34 +1,48 @@
 # wordle-task
 Это pet project с игрой Вордли(Wordle).
 
-# Plan
+<!--Структура репозитория-->
+## Структура репозитория
+| # | Описание |
+|-|-|
+|client_qt|Клиент для GUI Linux и Wasm(Web Assembly)|
+|server_http|HTTP сервер|
+|server_iam|Identity and Access Managment service|
+|server_statistics|Сервер статистики для игры|
+|client_bash|Клиент для игры в bash/sh|
+
+<!--План развития проекта-->
+## План развития проекта:
 | # | What | Platform | Stack | State | Comment |
 |-|-|-|-|-|-|
-|1|Desktop application|Ubuntu 20.04|C++, Qt5|Done|Собирается в Ubuntu 20.04. Работает в Ubuntu 20.04|
-|2|Web application|Web browsers|C++, Qt Latest, Web Assembly|In Progress|Приложение в Web Assembly, работает в Google Chrome|
-|3|Web Application|Telegramm App|C++, TDLib|Planning|Можно поиграть в официальных приложениях Telegramm Desktop и Telegramm Android|
-|4|Web Application|VK Mini Apps|????|Planning|Можно поиграть в VK|
-|5|Backend|Ubuntu 24.04|C++, userver, postgres|Planning|IAM Service|
-|6|Backend|Ubuntu 24.04|C++, userver, redis|Planning|Сервер статистики|
-|7|GUI|Ubuntu|C++, Qt 6|Planning|Использовать Qt Virtual Keyboard|
-|8|Desktop application|Ubuntu|C++, Qt6 latest|Planning|Сделать новый таргет сборки в Docker где Qt latest, сборка на ubuntu:25.04. Qt собирается из latest исходников или из репозитория. Сборка статическая где всё вкомпилено в бинарник и Qt и системные либы. |
-|9|Desktop application|Linux|C++, Qt 6|Planning|Сделать консольную версию. Чтобы всё работало в bash с минимальным интерфейсом вроде dialog.|
+|1|Desktop application|Ubuntu 20.04|C++, Qt5|Done|client_qt Собирается в Ubuntu 20.04. Работает в Ubuntu 20.04|
+|2|Web application|Web browsers|C++, Qt Latest, Web Assembly|Done|client_qt для Web Assembly, работает в Google Chrome|
+|3|Backend|Ubuntu 24.04|C++, userver|In Progress|server_http для запуска клиента в wasm в поддомене www.wordle-task.repotest.ru|
+|4|Backend|Ubuntu 24.04|C++, userver, postgres|Planning|IAM Service|
+|5|Backend|Ubuntu 24.04|C++, userver, redis|Planning|Сервер статистики|
+|6|Desktop application|Linux|C++, Qt 6|Planning|Сделать консольную версию. Чтобы всё работало в bash с минимальным интерфейсом вроде dialog.|
+|7|Web Application|Telegramm App|C++, TDLib|Planning|Можно поиграть в официальных приложениях Telegramm Desktop и Telegramm Android|
+|8|Web Application|VK Mini Apps|????|Planning|Можно поиграть в VK|
+|9|GUI|Ubuntu|C++, Qt 6|Planning|Использовать Qt Virtual Keyboard|
+|10|Desktop application|Ubuntu|C++, Qt6 latest|Planning|Сделать новый таргет сборки в Docker где Qt latest, сборка на ubuntu:25.04. Qt собирается из latest исходников или из репозитория. Сборка статическая где всё вкомпилено в бинарник и Qt и системные либы. |
 
-# 0
-Все сборки в докере.
+<!--Подготовить хост-->
+## Подготовить хост для сборки.
 
 Установить docker 
 ```bash
 source <(curl https://raw.githubusercontent.com/alec-chicherini/wordle-task/refs/heads/main/scripts/install_docker.sh)
 ```
-# 1
-### Собрать на чистой машине Ubuntu
+
+<!--Собрать клиент и deb пакет для linux-->
+## 1 client_qt linux
+### Собрать клиент и deb пакет для linux ubuntu
 Собрать в docker
 ```bash
 git clone https://github.com/alec-chicherini/wordle-task.git
-cd wordle-task
+cd wordle-task/client_qt
 docker build --target=qt_from_repo . -t wordle-task-build
-#docker build --target=qt_from_source . -t wordle-task-build #другая опция взять собрать Qt из исходников.
+#TODO docker build --target=qt_from_source . -t wordle-task-build #другая опция взять собрать Qt из исходников.
 mkdir result #Тут будет инсталятор 
 docker run -v ./result:/result wordle-task-build
 ```
@@ -53,8 +67,9 @@ apt-get install -f -y
 echo "УЕЫАО ЭЯИЮЙ" > /opt/wordle-task/words/new_words.txt
 ``` 
 
-# 2
-Собрать в docker и запустить python http.server для дебага
+<!--Собрать клиент wasm и запустить для дебага-->
+## 2 client_qt wasm
+Собрать wasm в docker и запустить python http.server для дебага
 ```bash
 git clone https://github.com/alec-chicherini/wordle-task.git
 cd wordle-task
@@ -62,14 +77,16 @@ docker build --target=qt_wasm_build_from_source . -t wordle-task-build-wasm
 docker run --rm -d -p 80:8000 wordle-task-build-wasm
 ```
 
-# 4
+<!--Собрать и запустить http сервер и добавить в него wasm подпроект-->
+## 3 server_http
+### Собрать и запустить. Добавить в него wasm подпроект по адресу www.wordle-task.repotest.ru
 TODO:
 
-# 5
+## 4
 TODO:
 
-# 6
+## 5
 TODO:
 
-# 7
+## 6
 TODO:

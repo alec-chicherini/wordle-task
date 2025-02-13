@@ -1,5 +1,5 @@
 #!/bin/bash
 ./build_script.sh
-cd build
+cd ../build_client
 sudo apt remove wordle-task -y
 sudo dpkg -i *.deb

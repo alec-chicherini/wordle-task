@@ -1,8 +1,8 @@
 #!/bin/bash
-cd /wordle-task
-rm build -rf
-mkdir build
-cd build
+cd /wordle-task/client_qt
+rm build_client -rf
+mkdir build_client
+cd build_client
 
 if [ -n $QT_BUILDED_FROM_SOURCE_PATH ]
 then
