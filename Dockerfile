@@ -135,3 +135,22 @@ RUN cd wordle-task/client_qt && mkdir build_wasm && cd build_wasm && \
     cmake --build .
 RUN chmod 755 /wordle-task/scripts/run_python_http_server_wasm.sh
 ENTRYPOINT ["/wordle-task/scripts/run_python_http_server_wasm.sh", "/wordle-task/client_qt/build_wasm"]
+
+FROM ubuntu:24.04 AS http_server_build
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+    apt install -y \
+    wget
+
+RUN DEPS_FILE="https://raw.githubusercontent.com/userver-framework/userver/refs/heads/develop/scripts/docs/en/deps/ubuntu-24.04.md" && \
+    apt install --allow-downgrades -y $(wget -q -O - ${DEPS_FILE})
+
+RUN wget https://github.com/userver-framework/userver/releases/download/v2.7/ubuntu24.04-libuserver-all-dev_2.7_amd64.deb && \
+    dpkg -i ubuntu24.04-libuserver-all-dev_2.7_amd64.deb
+
+COPY . /wordle-task
+RUN cd /wordle-task/http_server && mkdir build && cd build && \
+    cmake .. -DCMAKE_C_COMPILER=gcc-13 -DCMAKE_CXX_COMPILER=g++-13 && \
+    cmake --build .
+ENTRYPOINT ["/wordle-task/http_server/build/http-server", " --config /wordle-task/http_server/configs/static_config.yaml"]

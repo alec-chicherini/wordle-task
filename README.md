@@ -42,7 +42,7 @@ source <(curl https://raw.githubusercontent.com/alec-chicherini/wordle-task/refs
 git clone https://github.com/alec-chicherini/wordle-task.git
 cd wordle-task
 docker build --target=qt_from_repo . -t wordle-task-build
-#TODO docker build --target=qt_from_source . -t wordle-task-build #другая опция взять собрать Qt из исходников.
+#TODO docker build --target=qt_from_source . -t wordle-task-build-source #другая опция собрать Qt из исходников.
 mkdir result #Тут будет инсталятор 
 docker run -v ./result:/result wordle-task-build
 ```
@@ -81,6 +81,12 @@ docker run --rm -d -p 80:8000 wordle-task-build-wasm
 ## 3 server_http
 ### Собрать и запустить. Добавить в него wasm подпроект по адресу www.wordle-task.repotest.ru
 TODO:
+```bash
+git clone https://github.com/alec-chicherini/wordle-task.git
+cd wordle-task
+docker build --target=http_server_build . -t http_server_build
+docker run --rm -d -p 80:8080 http_server_build
+```
 
 ## 4
 TODO:
