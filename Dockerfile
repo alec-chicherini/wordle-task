@@ -132,5 +132,5 @@ COPY . /wordle-task
 RUN cd wordle-task && mkdir build && cd build && \
     /Qt-6.7.3-wasm/bin/./qt-cmake .. && \
     cmake --build .
-
+RUN chmod 755 /wordle-task/deploy/run_python_http_server_wasm.sh
 ENTRYPOINT ["/wordle-task/deploy/run_python_http_server_wasm.sh", "/wordle-task/build"]
