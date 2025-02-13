@@ -40,7 +40,7 @@ source <(curl https://raw.githubusercontent.com/alec-chicherini/wordle-task/refs
 Собрать в docker
 ```bash
 git clone https://github.com/alec-chicherini/wordle-task.git
-cd wordle-task/client_qt
+cd wordle-task
 docker build --target=qt_from_repo . -t wordle-task-build
 #TODO docker build --target=qt_from_source . -t wordle-task-build #другая опция взять собрать Qt из исходников.
 mkdir result #Тут будет инсталятор 

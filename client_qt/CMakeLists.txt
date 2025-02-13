@@ -13,8 +13,8 @@ message(INFO "CMAKE_CXX_COMPILE_FEATURES = ${CMAKE_CXX_COMPILE_FEATURES}")
 message(INFO "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
-add_subdirectory(src)
 set(SOURCE_FILES__ main.cxx GameState.cxx GameState.h WidgetButtons.cxx WidgetButtons.h WidgetKeyboard.cxx WidgetButtons.h WidgetGame.h WidgetGame.cxx)
+list(TRANSFORM SOURCE_FILES__ PREPEND "src/")
 if(EMSCRIPTEN)
     qt_add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES__})
     set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS "--preload-file ../deploy/wordle-task/words/words.txt@/opt/wordle-task/words/words.txt")
@@ -26,7 +26,7 @@ else()
 endif()
 
 target_compile_features(${CMAKE_PROJECT_NAME} PUBLIC cxx_std_20)
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 
 #CPack

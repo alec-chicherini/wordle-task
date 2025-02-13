@@ -1,7 +1,5 @@
 FROM ubuntu:24.04 AS qt_from_source
 
-COPY . /wordle-task
-
 RUN apt update && \
     apt install -y \
     git \
@@ -36,7 +34,8 @@ RUN apt update && \
 
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-13 100
 
-RUN bash scripts/install_cmake.sh
+COPY --chmod=777 scripts/install_cmake.sh ./
+RUN ./install_cmake.sh
 
 RUN wget https://mirror.yandex.ru/mirrors/qt.io/archive/qt/6.7/6.7.3/single/qt-everywhere-src-6.7.3.tar.xz && \
     tar xf qt-everywhere-src-6.7.3.tar.xz
@@ -47,7 +46,7 @@ RUN cmake --build . --parallel 4
 RUN cmake --install . --prefix /Qt-6.7.3
 
 ENV QT_BUILDED_FROM_SOURCE_PATH=/Qt-6.7.3
-
+COPY . /wordle-task
 RUN mkdir /result
 ENTRYPOINT ["bash", "/wordle-task/client_qt/deploy/rebuild.sh"]
 
@@ -59,8 +58,10 @@ RUN apt update && \
     g++-10 \ 
     qt5-default
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-10 100
+COPY --chmod=777 scripts/install_cmake.sh ./
+RUN ./install_cmake.sh
+
 COPY . /wordle-task
-RUN bash /wordle-task/scripts/install_cmake.sh
 RUN mkdir /result
 ENTRYPOINT ["bash", "/wordle-task/client_qt/deploy/rebuild.sh"]
 
