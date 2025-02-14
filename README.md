@@ -88,6 +88,11 @@ docker build --target=http_server_build . -t http_server_build
 docker run --rm -d -p 80:8080 http_server_build
 ```
 
+### repotest.ru
+Актуальная версия Игры в Web Assembly по адресу:
+http://www.wordle-task.repotest.ru/wordle-task.html 
+
+
 ## 4
 TODO:
 

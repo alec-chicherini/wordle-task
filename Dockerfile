@@ -154,7 +154,7 @@ RUN cd /wordle-task/http_server && mkdir build && cd build && \
     cmake .. -DCMAKE_C_COMPILER=gcc-13 -DCMAKE_CXX_COMPILER=g++-13 && \
     cmake --build .
 
-COPY --from=qt_wasm_build_from_source /wordle-task/http_server/build/ /var/www/wordle-task.repotest.ru/
+COPY --from=qt_wasm_build_from_source /wordle-task/client_qt/build_wasm/ /var/www/wordle-task.repotest.ru/
 
 RUN mkdir /var/www/repotest.ru 
 COPY <<INDEX_HTML /var/www/repotest.ru/index.html
