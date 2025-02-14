@@ -153,4 +153,21 @@ COPY . /wordle-task
 RUN cd /wordle-task/http_server && mkdir build && cd build && \
     cmake .. -DCMAKE_C_COMPILER=gcc-13 -DCMAKE_CXX_COMPILER=g++-13 && \
     cmake --build .
+
+COPY --from=qt_wasm_build_from_source /wordle-task/http_server/build/ /var/www/wordle-task.repotest.ru/
+
+RUN mkdir /var/www/repotest.ru 
+COPY <<INDEX_HTML /var/www/repotest.ru/index.html
+<html>
+	<head>
+		<title>repotest.ru</title>
+	</head>
+	<body>
+		Welcome to repotest.ru. 
+        This is the host for https://github.com/alec-chicherini/ pet projects.
+	</body>
+    <a href="http://www.wordle-task.repotest.ru/wordle-task.html">wordle-task wasm Qt</a>
+</html>
+INDEX_HTML
+
 ENTRYPOINT ["/wordle-task/http_server/build/http-server", " --config /wordle-task/http_server/configs/static_config.yaml"]
