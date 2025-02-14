@@ -15,7 +15,7 @@ message(INFO "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
 find_package(userver REQUIRED COMPONENTS core)
 
 # The Service
-set(SOURCE_FILES__ hello.cpp  hello.hpp main.cpp)
+set(SOURCE_FILES__ main.cpp http_handler_subdomain_static.cpp http_handler_subdomain_static.hpp )
 list(TRANSFORM SOURCE_FILES__ PREPEND "src/")
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES__})
 target_compile_features(${CMAKE_PROJECT_NAME} PUBLIC cxx_std_20)
