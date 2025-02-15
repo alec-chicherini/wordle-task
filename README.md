@@ -18,7 +18,8 @@
 |-|-|-|-|-|
 |Desktop application|Ubuntu 20.04|C++, Qt5|Done|client_qt Собирается в Ubuntu 20.04. Работает в Ubuntu 20.04|
 |Web application|Web browsers|C++, Qt Latest, Web Assembly|Done|client_qt для Web Assembly, работает в Google Chrome|
-|Backend|Ubuntu 24.04|C++, userver|In Progress|server_http для запуска клиента в wasm в поддомене www.wordle-task.repotest.ru. Добавить tls https, чтобы каждый сервер в handler-subdomain-static подписывался. |
+|Backend|Ubuntu 24.04|C++, userver|Done|server_http для запуска клиента в wasm в поддомене www.wordle-task.repotest.ru.|
+|Backend|Ubuntu 24.04|C++, userver|In Progress|Добавить tls https, чтобы каждый сервер в handler-subdomain-static подписывался. |
 |repotest.ru|Web browser|c++, html|In Progress|Сделать главную страницу для repotest.ru со ссылками на мои проекты в github|
 |Backend|Ubuntu 24.04|C++, userver, postgres|Planning|IAM Service|
 |Backend|Ubuntu 24.04|C++, userver, redis|Planning|Сервер статистики|
@@ -38,7 +39,7 @@ source <(curl https://raw.githubusercontent.com/alec-chicherini/wordle-task/refs
 ```
 
 <!--Собрать клиент и deb пакет для linux-->
-## 1 client_qt linux
+## client_qt linux
 ### Собрать клиент и deb пакет для linux ubuntu
 Собрать в docker
 ```bash
@@ -71,7 +72,7 @@ echo "УЕЫАО ЭЯИЮЙ" > /opt/wordle-task/words/new_words.txt
 ``` 
 
 <!--Собрать клиент wasm и запустить для дебага-->
-## 2 client_qt wasm
+## client_qt wasm
 Собрать wasm в docker и запустить python http.server для дебага
 ```bash
 git clone https://github.com/alec-chicherini/wordle-task.git
@@ -81,9 +82,8 @@ docker run --rm -d -p 80:8000 wordle-task-build-wasm
 ```
 
 <!--Собрать и запустить http сервер и добавить в него wasm подпроект-->
-## 3 server_http
-### Собрать и запустить. Добавить в него wasm подпроект по адресу www.wordle-task.repotest.ru
-TODO:
+## server_http
+### Собрать и запустить.
 ```bash
 git clone https://github.com/alec-chicherini/wordle-task.git
 cd wordle-task
@@ -94,7 +94,6 @@ docker run --rm -d -p 80:8080 http_server_build
 ### repotest.ru
 Актуальная версия Игры в Web Assembly по адресу:
 http://www.wordle-task.repotest.ru/wordle-task.html 
-
 
 ## 4
 TODO:

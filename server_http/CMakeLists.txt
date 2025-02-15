@@ -7,7 +7,7 @@ add_compile_options(
     -Werror
     -Wall
 )
-project(http-server)
+project(server-http)
 
 message(INFO "CMAKE_CXX_COMPILE_FEATURES = ${CMAKE_CXX_COMPILE_FEATURES}")
 message(INFO "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")

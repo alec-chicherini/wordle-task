@@ -170,4 +170,4 @@ COPY <<INDEX_HTML /var/www/repotest.ru/index.html
 </html>
 INDEX_HTML
 
-ENTRYPOINT ["/wordle-task/server_http/build/server_http", " --config /wordle-task/server_http/configs/static_config.yaml"]
+ENTRYPOINT ["/wordle-task/server_http/build/server-http", "--config", "/wordle-task/server_http/configs/static_config.yaml"]
