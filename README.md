@@ -10,21 +10,24 @@
 |server_iam|Identity and Access Managment service|
 |server_statistics|Сервер статистики для игры|
 |client_bash|Клиент для игры в bash/sh|
+|site_repotest_ru|Главная страница repotest.ru|
 
 <!--План развития проекта-->
 ## План развития проекта:
-| # | What | Platform | Stack | State | Comment |
-|-|-|-|-|-|-|
-|1|Desktop application|Ubuntu 20.04|C++, Qt5|Done|client_qt Собирается в Ubuntu 20.04. Работает в Ubuntu 20.04|
-|2|Web application|Web browsers|C++, Qt Latest, Web Assembly|Done|client_qt для Web Assembly, работает в Google Chrome|
-|3|Backend|Ubuntu 24.04|C++, userver|In Progress|server_http для запуска клиента в wasm в поддомене www.wordle-task.repotest.ru|
-|4|Backend|Ubuntu 24.04|C++, userver, postgres|Planning|IAM Service|
-|5|Backend|Ubuntu 24.04|C++, userver, redis|Planning|Сервер статистики|
-|6|Desktop application|Linux|C++, Qt 6|Planning|Сделать консольную версию. Чтобы всё работало в bash с минимальным интерфейсом вроде dialog.|
-|7|Web Application|Telegramm App|C++, TDLib|Planning|Можно поиграть в официальных приложениях Telegramm Desktop и Telegramm Android|
-|8|Web Application|VK Mini Apps|????|Planning|Можно поиграть в VK|
-|9|GUI|Ubuntu|C++, Qt 6|Planning|Использовать Qt Virtual Keyboard|
-|10|Desktop application|Ubuntu|C++, Qt6 latest|Planning|Сделать новый таргет сборки в Docker где Qt latest, сборка на ubuntu:25.04. Qt собирается из latest исходников или из репозитория. Сборка статическая где всё вкомпилено в бинарник и Qt и системные либы. |
+| What | Platform | Stack | State | Comment |
+|-|-|-|-|-|
+|Desktop application|Ubuntu 20.04|C++, Qt5|Done|client_qt Собирается в Ubuntu 20.04. Работает в Ubuntu 20.04|
+|Web application|Web browsers|C++, Qt Latest, Web Assembly|Done|client_qt для Web Assembly, работает в Google Chrome|
+|Backend|Ubuntu 24.04|C++, userver|In Progress|server_http для запуска клиента в wasm в поддомене www.wordle-task.repotest.ru. Добавить tls https, чтобы каждый сервер в handler-subdomain-static подписывался. |
+|repotest.ru|Web browser|c++, html|In Progress|Сделать главную страницу для repotest.ru со ссылками на мои проекты в github|
+|Backend|Ubuntu 24.04|C++, userver, postgres|Planning|IAM Service|
+|Backend|Ubuntu 24.04|C++, userver, redis|Planning|Сервер статистики|
+|Desktop application|Linux|C++, Qt 6|Planning|Сделать консольную версию. Чтобы всё работало в bash с минимальным интерфейсом вроде dialog.|
+|Web Application|Telegramm App|C++, TDLib|Planning|Можно поиграть в официальных приложениях Telegramm Desktop и Telegramm Android|
+|Web Application|VK Mini Apps|????|Planning|Можно поиграть в VK|
+|GUI|Ubuntu|C++, Qt 6|Planning|Использовать Qt Virtual Keyboard|
+|Desktop application|Ubuntu|C++, Qt6 latest|Planning|Сделать новый таргет сборки в Docker где Qt latest, сборка на ubuntu:25.04. Qt собирается из latest исходников или из репозитория. Сборка статическая где всё вкомпилено в бинарник и Qt и системные либы. |
+|pet-game-cpp-backend.repotest.ru|c++, javascript|Planning|Добавить на https://github.com/alec-chicherini/ на repotest.ru|
 
 <!--Подготовить хост-->
 ## Подготовить хост для сборки.

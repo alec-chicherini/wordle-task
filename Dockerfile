@@ -150,7 +150,7 @@ RUN wget https://github.com/userver-framework/userver/releases/download/v2.7/ubu
     dpkg -i ubuntu24.04-libuserver-all-dev_2.7_amd64.deb
 
 COPY . /wordle-task
-RUN cd /wordle-task/http_server && mkdir build && cd build && \
+RUN cd /wordle-task/server_http && mkdir build && cd build && \
     cmake .. -DCMAKE_C_COMPILER=gcc-13 -DCMAKE_CXX_COMPILER=g++-13 && \
     cmake --build .
 
@@ -170,4 +170,4 @@ COPY <<INDEX_HTML /var/www/repotest.ru/index.html
 </html>
 INDEX_HTML
 
-ENTRYPOINT ["/wordle-task/http_server/build/http-server", " --config /wordle-task/http_server/configs/static_config.yaml"]
+ENTRYPOINT ["/wordle-task/server_http/build/server_http", " --config /wordle-task/server_http/configs/static_config.yaml"]
