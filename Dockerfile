@@ -6,7 +6,7 @@ RUN apt update && \
     python3 \
     build-essential \
     xz-utils \
-    wget \
+    wget
 
 COPY --chmod=777 scripts/install_cmake.sh ./
 RUN ./install_cmake.sh
@@ -144,9 +144,11 @@ RUN wget https://github.com/userver-framework/userver/releases/download/v2.7/ubu
 COPY . /wordle-task
 RUN cd /wordle-task/server_http && mkdir build && cd build && \
     cmake .. -DCMAKE_C_COMPILER=gcc-13 -DCMAKE_CXX_COMPILER=g++-13 && \
-    cmake --build .
+    cmake --build . && \
+    cpack . && \
+    dpkg -i *.deb
 
 COPY --from=qt_wasm_build_from_source /wordle-task/client_qt/build_wasm/ /var/www/wordle-task.repotest.ru/
 COPY --from=site_repotest_ru_build /wordle-task/site_repotest_ru/build/index.html /var/www/repotest.ru/ 
 
-ENTRYPOINT ["/wordle-task/server_http/build/server-http", "--config", "/wordle-task/server_http/configs/static_config.yaml"]
+ENTRYPOINT ["server-http", "--config", "/etc/server-http/static_config.yaml"]

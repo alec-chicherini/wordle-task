@@ -1,25 +1,34 @@
+config_vars: /etc/server-http/config_vars.yaml
 components_manager:
-    task_processors:                  # Task processor is an executor for coroutine tasks
-
-        main-task-processor:          # Make a task processor for CPU-bound coroutine tasks.
-            worker_threads: 2         # Process tasks in 4 threads.
-
-        fs-task-processor:            # Make a separate task processor for filesystem bound tasks.
-            worker_threads: 1
+    task_processors:                        # Task processor is an executor for coroutine tasks
+        main-task-processor:                # Make a task processor for CPU-bound coroutine tasks.
+            thread_name: main-worker
+            worker_threads: $main_worker_threads # Process tasks in 4 threads.
+            worker_threads#fallback: 2      # Process tasks in 4 threads.
+        fs-task-processor:                  # Make a separate task processor for filesystem bound tasks.
+            thread_name: fs-worker
+            worker_threads: $fs_worker_threads
+            worker_threads#fallback: 1
+        monitor-task-processor:             # Make a separate task processor for monitoring.
+            thread_name: mon-worker
+            worker_threads: $monitor_worker_threads
+            worker_threads#fallback: 1
 
     default_task_processor: main-task-processor
 
     components:                       # Configuring components that were registered via component_list
         server:
             listener:                 # configuring the main listening socket...
-                port: 8080            # ...to listen on this port and...
+                port: $server-port    # ...to listen on this port and...
+                port#fallback: 8080
                 task_processor: main-task-processor    # ...process incoming requests on this task processor.
         logging:
             fs-task-processor: fs-task-processor
             loggers:
                 default:
                     file_path: '@stderr'
-                    level: info
+                    level: $logger_level
+                    level#fallback: Debug
                     overflow_behavior: discard  # Drop logs if the system is too busy to write them down.
 
         # Dynamic config options. Cache is disabled, updates are disabled.
@@ -32,7 +41,8 @@ components_manager:
         testsuite-support: {}
 
         http-client:
-            load-enabled: false
+            load-enabled: $is_testing
+            load-enabled#fallback: false
             fs-task-processor: fs-task-processor
 
         dns-client:
@@ -61,7 +71,8 @@ components_manager:
           fs-task-processor: fs-task-processor       # Run it on blocking task processor
 
         handler-subdomain-static: # Finally! Static handler.
-            fs-cache-storages:  [repotest.ru, wordle-task.repotest.ru]
+            fs-cache-storages: $hosts_list
+            fs-cache-storages#fallback:  []
             path: /*                  # Registering handlers '/*' find files.
             method: GET              # Handle only GET requests.
             task_processor: main-task-processor  # Run it on CPU bound task processor

@@ -20,7 +20,7 @@
 |Web application|Web browsers|C++, Qt Latest, Web Assembly|Done|client_qt для Web Assembly, работает в Google Chrome|
 |Backend|Ubuntu 24.04|C++, userver|Done|server_http для запуска клиента в wasm в поддомене www.wordle-task.repotest.ru.|
 |Backend|Ubuntu 24.04|C++, userver|In Progress|Добавить tls https, чтобы каждый сервер в handler-subdomain-static подписывался. |
-|repotest.ru|Web browser|c++, html|In Progress|Сделать главную страницу для repotest.ru со ссылками на мои проекты в github|
+|repotest.ru|Web browser|c++, html|Done|Сделать главную страницу для repotest.ru со ссылками на мои проекты в github|
 |Backend|Ubuntu 24.04|C++, userver, postgres|Planning|IAM Service|
 |Backend|Ubuntu 24.04|C++, userver, redis|Planning|Сервер статистики|
 |Desktop application|Linux|C++, Qt 6|Planning|Сделать консольную версию. Чтобы всё работало в bash с минимальным интерфейсом вроде dialog.|
@@ -94,14 +94,8 @@ docker run --rm -d -p 80:8080 http_server_build
 ```
 
 ### repotest.ru
+Главная страница repotest.ru:
+http://www.repotest.ru/index.html 
+
 Актуальная версия Игры в Web Assembly по адресу:
 http://www.wordle-task.repotest.ru/wordle-task.html 
-
-## 4
-TODO:
-
-## 5
-TODO:
-
-## 6
-TODO:
