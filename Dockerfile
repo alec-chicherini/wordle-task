@@ -1,10 +1,20 @@
-FROM ubuntu:24.04 AS qt_from_source
-
+FROM ubuntu:24.04 AS ubuntu2404_common_deps
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install -y \
     git \
-    g++-13 \
+    python3 \
     build-essential \
+    xz-utils \
+    wget \
+
+COPY --chmod=777 scripts/install_cmake.sh ./
+RUN ./install_cmake.sh
+
+FROM ubuntu2404_common_deps AS ubuntu2404_qt_deps
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && \
+    apt install -y \
     libgl1-mesa-dev \
     libfontconfig1-dev \
     libfreetype-dev \
@@ -32,10 +42,12 @@ RUN apt update && \
     libxkbcommon-x11-dev \
     libxrender-dev
 
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-13 100
+FROM ubuntu2404_qt_deps AS qt_from_source
+RUN apt update && \
+    apt install -y \
+    g++-13 
 
-COPY --chmod=777 scripts/install_cmake.sh ./
-RUN ./install_cmake.sh
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-13 100
 
 RUN wget https://mirror.yandex.ru/mirrors/qt.io/archive/qt/6.7/6.7.3/single/qt-everywhere-src-6.7.3.tar.xz && \
     tar xf qt-everywhere-src-6.7.3.tar.xz
@@ -65,14 +77,11 @@ COPY . /wordle-task
 RUN mkdir /result
 ENTRYPOINT ["bash", "/wordle-task/client_qt/deploy/rebuild.sh"]
 
-FROM ubuntu:24.04 AS site_repotest_ru_build
+FROM ubuntu2404_common_deps AS site_repotest_ru_build
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
     apt install -y \
-    git \
-    python3 \
-    cmake \
     clang
 
 COPY . /wordle-task
@@ -86,43 +95,11 @@ RUN cd /wordle-task/site_repotest_ru && mkdir build && cd build && \
 RUN chmod 755 /wordle-task/scripts/run_python_http_server_wasm.sh
 ENTRYPOINT ["/wordle-task/scripts/run_python_http_server_wasm.sh", "/wordle-task/site_repotest_ru/build"]
 
-FROM ubuntu:24.04 AS qt_wasm_build_from_source
+FROM ubuntu2404_qt_deps AS qt_wasm_build_from_source
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install -y \
-    git \
-    python3 \
-    xz-utils \
-    cmake \
     clang \
-    wget \
-    build-essential \
-    libgl1-mesa-dev \
-    libfontconfig1-dev \
-    libfreetype-dev \
-    libx11-dev \
-    libx11-xcb-dev \
-    libxcb-cursor-dev \
-    libxcb-glx0-dev \
-    libxcb-icccm4-dev \
-    libxcb-image0-dev \
-    libxcb-keysyms1-dev \
-    libxcb-randr0-dev \
-    libxcb-render-util0-dev \
-    libxcb-shape0-dev \
-    libxcb-shm0-dev \
-    libxcb-sync-dev \
-    libxcb-util-dev \
-    libxcb-xfixes0-dev \
-    libxcb-xinerama0-dev \
-    libxcb-xkb-dev \
-    libxcb1-dev \
-    libxext-dev \
-    libxfixes-dev \
-    libxi-dev \
-    libxkbcommon-dev \
-    libxkbcommon-x11-dev \
-    libxrender-dev \
     libclang-18-dev
 
 RUN git clone https://github.com/emscripten-core/emsdk.git && \
@@ -155,12 +132,8 @@ RUN cd wordle-task/client_qt && mkdir build_wasm && cd build_wasm && \
 RUN chmod 755 /wordle-task/scripts/run_python_http_server_wasm.sh
 ENTRYPOINT ["/wordle-task/scripts/run_python_http_server_wasm.sh", "/wordle-task/client_qt/build_wasm"]
 
-FROM ubuntu:24.04 AS http_server_build
+FROM ubuntu2404_common_deps AS http_server_build
 ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt update && \
-    apt install -y \
-    wget
 
 RUN DEPS_FILE="https://raw.githubusercontent.com/userver-framework/userver/refs/heads/develop/scripts/docs/en/deps/ubuntu-24.04.md" && \
     apt install --allow-downgrades -y $(wget -q -O - ${DEPS_FILE})
