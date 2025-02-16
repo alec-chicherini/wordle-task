@@ -65,6 +65,27 @@ COPY . /wordle-task
 RUN mkdir /result
 ENTRYPOINT ["bash", "/wordle-task/client_qt/deploy/rebuild.sh"]
 
+FROM ubuntu:24.04 AS site_repotest_ru_build
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+    apt install -y \
+    git \
+    python3 \
+    cmake \
+    clang
+
+COPY . /wordle-task
+
+RUN cd /wordle-task/site_repotest_ru && mkdir build && cd build && \
+    git submodule init && git submodule update && \
+    cmake .. && \
+    cmake --build . && \
+    /wordle-task/site_repotest_ru/build/site-repotest-ru > /wordle-task/site_repotest_ru/build/index.html
+
+RUN chmod 755 /wordle-task/scripts/run_python_http_server_wasm.sh
+ENTRYPOINT ["/wordle-task/scripts/run_python_http_server_wasm.sh", "/wordle-task/site_repotest_ru/build"]
+
 FROM ubuntu:24.04 AS qt_wasm_build_from_source
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
@@ -74,6 +95,7 @@ RUN apt update && \
     xz-utils \
     cmake \
     clang \
+    wget \
     build-essential \
     libgl1-mesa-dev \
     libfontconfig1-dev \
@@ -113,9 +135,6 @@ ENV EMSDK=/emsdk
 ENV EMSDK_NODE=/emsdk/node/20.18.0_64bit/bin/node
 ENV PATH=/emsdk:/emsdk/upstream/emscripten:/emsdk/node/20.18.0_64bit/bin:${PATH}
 
-RUN apt update && \
-    apt install -y \
-    wget
 RUN wget https://mirror.yandex.ru/mirrors/qt.io/archive/qt/6.7/6.7.3/single/qt-everywhere-src-6.7.3.tar.xz && \
     tar xf qt-everywhere-src-6.7.3.tar.xz  && \
     cd qt-everywhere-src-6.7.3 && \
@@ -155,19 +174,6 @@ RUN cd /wordle-task/server_http && mkdir build && cd build && \
     cmake --build .
 
 COPY --from=qt_wasm_build_from_source /wordle-task/client_qt/build_wasm/ /var/www/wordle-task.repotest.ru/
-
-RUN mkdir /var/www/repotest.ru 
-COPY <<INDEX_HTML /var/www/repotest.ru/index.html
-<html>
-	<head>
-		<title>repotest.ru</title>
-	</head>
-	<body>
-		Welcome to repotest.ru. 
-        This is the host for https://github.com/alec-chicherini/ pet projects.
-	</body>
-    <a href="http://www.wordle-task.repotest.ru/wordle-task.html">wordle-task wasm Qt</a>
-</html>
-INDEX_HTML
+COPY --from=site_repotest_ru_build /wordle-task/site_repotest_ru/build/index.html /var/www/repotest.ru/ 
 
 ENTRYPOINT ["/wordle-task/server_http/build/server-http", "--config", "/wordle-task/server_http/configs/static_config.yaml"]

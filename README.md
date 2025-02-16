@@ -29,6 +29,8 @@
 |GUI|Ubuntu|C++, Qt 6|Planning|Использовать Qt Virtual Keyboard|
 |Desktop application|Ubuntu|C++, Qt6 latest|Planning|Сделать новый таргет сборки в Docker где Qt latest, сборка на ubuntu:25.04. Qt собирается из latest исходников или из репозитория. Сборка статическая где всё вкомпилено в бинарник и Qt и системные либы. |
 |pet-game-cpp-backend.repotest.ru|c++, javascript|Planning|Добавить на https://github.com/alec-chicherini/ на repotest.ru|
+|Backend|Ubuntu 24.04|C++, userver|Planning|server_http вынести в отдельный проект|
+|site_repotest_ru|Web browser|C++, html|Planning| вынести в отдельный проект|
 
 <!--Подготовить хост-->
 ## Подготовить хост для сборки.

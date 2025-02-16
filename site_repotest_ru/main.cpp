@@ -22,20 +22,10 @@ int main() {
 	// Content in a container
 	HTML::Div main("container");
 	main << HTML::Header1("repotest.ru").id("anchor_link_1");
-	main << HTML::Paragraph("Это сайт моих экспериментов и пет проектов на C++");
+	main << HTML::Paragraph("Это сайт моих экспериментов и пет проектов на C++").style("font-family:monospace");
 	main << HTML::Text("Исходный код всех проектов в ") << HTML::Break();
 	main << HTML::Link("https://github.com/alec-chicherini", "https://github.com/alec-chicherini").cls("my_style");
 	
-	main << (HTML::Paragraph("A paragraph. ").style("font-family:mono")
-		<< HTML::Text("Text child.") << HTML::Break() << HTML::Text("And more text."));
-
-	main << (HTML::List()
-		<< (HTML::ListItem("Русский тестк новый"))
-		<< (HTML::ListItem() << HTML::Link("Github Link", "http://srombauts.github.io").title("SRombaut's Github home page"))
-		<< (HTML::ListItem() << (HTML::List()
-			<< HTML::ListItem("val1")
-			<< HTML::ListItem("val2"))));
-
 	main << (HTML::Table().cls("table table-hover table-sm")
 		<< HTML::Caption("Ссылки на задеплоенные проекты")
 		<< (HTML::Row() << HTML::ColHeader("Ссылка") << HTML::ColHeader("github.com") << HTML::ColHeader("Описание") << HTML::ColHeader("Технология"))
@@ -45,15 +35,14 @@ int main() {
 			<< HTML::Col("https://github.com/SRombauts/HtmlBuilder"))
 		<< (HTML::Row() << (HTML::Col() << HTML::Link("repotest.ru", "repotest.ru/index.html"))
 			<< (HTML::Col() << HTML::Link("server_http", "https://github.com/alec-chicherini/wordle-task/tree/main/server_http"))
-			<< HTML::Col("HTTP сервер"))
-		<< (HTML::Col() << HTML::Link("userver", "https://userver.tech/"))
+			<< HTML::Col("HTTP сервер")
+			<< (HTML::Col() << HTML::Link("userver", "https://userver.tech/")))
 		<< (HTML::Row() << (HTML::Col() << HTML::Link("wordle-task.repotest.ru", "wordle-task.repotest.ru/wordle-task.html"))
 			<< (HTML::Col() << HTML::Link("server_http", "https://github.com/alec-chicherini/wordle-task/tree/main/wordle_task_qt"))
 			<< HTML::Col("Игра wordle-task в wasm.")
 			<< (HTML::Col() << HTML::Link("Qt6 Web Assembly", "https://doc.qt.io/qt-6/wasm.html"))));
 
-
-	main << HTML::Small("Copyright Alec Chicherini @ 2025");
+	main << HTML::Small("Copyright Chicherin Alexey @ 2025");
 
 	main << HTML::Link().id("anchor_link_2");
 
