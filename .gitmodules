@@ -1,0 +1,3 @@
+[submodule "third_party/HtmlBuilder"]
+	path = third_party/HtmlBuilder
+	url = https://github.com/SRombauts/HtmlBuilder.git

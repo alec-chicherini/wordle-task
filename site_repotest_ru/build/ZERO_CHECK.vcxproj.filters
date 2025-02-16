@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\code\wordle-task\site_repotest_ru\build\CMakeFiles\db8024cee46355af9517771fef6438be\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{4B13C324-6D3B-3D89-8A7F-855C92C1FEC5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
