@@ -1,3 +1,7 @@
+# этот проект был разделён на несколько меньших
+Теперь главная страница тут 
+https://github.com/alec-chicherini/pet-projects-production
+
 # wordle-task
 Это pet project с игрой Вордли(Wordle).
 
